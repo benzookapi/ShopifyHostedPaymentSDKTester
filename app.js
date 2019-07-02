@@ -56,15 +56,15 @@ router.post('/complete', (ctx, next) => {
 
   console.log(body);
   
-  let query = Object.entries(body).map(e => e.join('=')).join('&');  
+  /* HMAC Signature */
   let msg = Object.entries(body).sort().map(e => e.join('')).join('');
   console.log(msg);
-
-  /* HMAC Signature */
   const hmac = crypto.createHmac('sha256', 'iU44RWxeik');
   hmac.update(msg);
   let signature = hmac.digest('hex');
 
+  // Convert POST body to query format for redirection
+  let query = Object.entries(body).map(e => e.join('=')).join('&');   
   query += "&x_signature=" + signature;
   console.log(complete + "?" + query);
 
