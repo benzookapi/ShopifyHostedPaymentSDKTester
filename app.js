@@ -17,7 +17,7 @@ router.get('/', (ctx, next) => {
 
 /* 1. Redirect from Shopify */
 router.post('/', (ctx) => {
-    var d = {"headers": {}, "body": {}};
+    var d = {"body": {}};
     //console.log(ctx.headers);
     console.log(ctx.request.body);
     //d.headers = ctx.headers;
@@ -60,6 +60,7 @@ router.post('/complete', (ctx, next) => {
   let msg = Object.entries(body).sort().map(e => e.join('')).join('');
   console.log(msg);
 
+  /* HMAC Signature */
   const hmac = crypto.createHmac('sha256', 'iU44RWxeik');
   hmac.update(msg);
   let signature = hmac.digest('hex');
@@ -67,17 +68,30 @@ router.post('/complete', (ctx, next) => {
   query += "&x_signature=" + signature;
   console.log(complete + "?" + query);
 
+  /* Calling back to Shopify */
   /*let repo = ctx.post(callback, body, {    
   });
   console.log(repo);*/   
 
+  /* Going back to Shopify as POST redirect */
   ctx.redirect(complete + "?" + query);
   ctx.status = 307;   
-  //ctx.body = "POST";
+  
 });
 
+/* Refund */
+router.post('/refund', (ctx, next) => {
+  console.log("******refund******");
+  console.log(ctx.request.body);
+  ctx.status = 200;
+});
 
-
+/* Capture */
+router.post('/capture', (ctx, next) => {
+  console.log("****capture******");
+  console.log(ctx.request.body);
+  ctx.status = 200;
+});
 
 app.use(router.routes());
 app.use(router.allowedMethods());
