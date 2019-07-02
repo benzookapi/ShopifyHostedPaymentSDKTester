@@ -82,4 +82,4 @@ router.post('/complete', (ctx, next) => {
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-if (!module.parent) app.listen(3000);
+if (!module.parent) app.listen(process.env.PORT || 3000);
