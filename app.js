@@ -11,6 +11,10 @@ app.use(bodyParser());
 
 app.use(koaRequest({}));
 
+router.get('/', (ctx, next) => {
+    ctx.body = "WELCOME TO MY PAYMENT GATEWAY MOCK";
+});
+
 /* 1. Redirect from Shopify */
 router.post('/', (ctx) => {
     var d = {"headers": {}, "body": {}};
