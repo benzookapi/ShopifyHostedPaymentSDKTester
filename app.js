@@ -129,7 +129,7 @@ const createSignature = function(json) {
 
 /* Check if the given signarure is corect or not */
 const checkSignature = function(json, signature) {
-  console.log("checkSignature, given: " + signarure);
+  console.log("checkSignature, given: " + signature);
   let sig = createSignature(signature);
   console.log("checkSignature, created: " + sig);
   return sig === signature ? true : false;
