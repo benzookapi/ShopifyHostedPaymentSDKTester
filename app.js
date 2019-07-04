@@ -47,7 +47,6 @@ router.post('/', (ctx) => {
     <labe>x_transaction_type:</label><input type="text" name="x_transaction_type" value=""><br/>
     <input type="hidden" name="x_url_callback" value="${d.body.x_url_callback}">
     <input type="hidden" name="x_url_complete" value="${d.body.x_url_complete}"><br/>
-    <input type="hidden" name="x_signature" value="${d.body.x_signature}"><br/>
     <input type="submit" value="Complete Payment" style="font-size: 80px; color: blue;">
     </form>`; 
     ctx.body = `<h1>MY PAYMENT GATEWAY MOCK</h1> ${JSON.stringify(d, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;")} <br/><br/>${form}`;
@@ -60,12 +59,6 @@ router.post('/complete', (ctx, next) => {
   var complete = ctx.request.body.x_url_complete;
   var body = ctx.request.body;
   console.log(body);
-
-  /* Check the signature */
-  if (!checkSignature(body)) {
-    ctx.status = 400;
-    return;
-  }
 
   delete body.x_url_callback;
   delete body.x_url_complete; 
@@ -97,10 +90,10 @@ router.post('/refund', (ctx, next) => {
   console.log("******refund******");
   console.log(ctx.request.body);
   /* Check the signature */
-  if (!checkSignature(ctx.request.body)) {
+  /*if (!checkSignature(ctx.request.body)) {
     ctx.status = 400;
     return;
-  }
+  }*/
   ctx.status = 200;
 });
 
@@ -109,10 +102,10 @@ router.post('/capture', (ctx, next) => {
   console.log("****capture******");
   console.log(ctx.request.body);
   /* Check the signature */
-  if (!checkSignature(ctx.request.body)) {
+  /*if (!checkSignature(ctx.request.body)) {
     ctx.status = 400;
     return;
-  }
+  }*/
   ctx.status = 200;
 });
 
