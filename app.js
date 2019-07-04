@@ -81,9 +81,9 @@ router.post('/complete', (ctx, next) => {
   ctx.post(callback, body, {
     'Content-Type': 'application/x-www-form-urlencoded'
   }).then(function(res){
-    console.log(res);
+    console.log("Callback, success: " + res);
   }).catch(function(e){
-    console.log("ERROR!! " + e);
+    console.log("Callback, error: " + e);
   });
   
   /* Going back to Shopify as POST redirect */
