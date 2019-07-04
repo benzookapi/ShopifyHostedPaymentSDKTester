@@ -77,10 +77,13 @@ router.post('/complete', (ctx, next) => {
   console.log(complete + "?" + query);
 
   /* Calling back to Shopify */
-  //body.x_signature = signature;
   ctx.post(callback, query, {
     'Content-Type': 'application/x-www-form-urlencoded'
-  }).then(repo => console.log(repo)).catch(e => console.log(e));
+  }).then(function(res){
+    console.log(res);
+  }).catch(function(e){
+    console.log("ERROR!! " + e);
+  });
   
   /* Going back to Shopify as POST redirect */
   ctx.redirect(complete + "?" + query);
