@@ -26,7 +26,7 @@ router.post('/', (ctx) => {
     d.body = ctx.request.body;
 
     /* Check the signature */
-    if (!checkSignature(d.body, d.body.x_signature)) {
+    if (!checkSignature(d.body)) {
       ctx.status = 400;
       return;
     }
@@ -62,7 +62,7 @@ router.post('/complete', (ctx, next) => {
   console.log(body);
 
   /* Check the signature */
-  if (!checkSignature(body, body.x_signature)) {
+  if (!checkSignature(body)) {
     ctx.status = 400;
     return;
   }
@@ -97,7 +97,7 @@ router.post('/refund', (ctx, next) => {
   console.log("******refund******");
   console.log(ctx.request.body);
   /* Check the signature */
-  if (!checkSignature(ctx.request.body, ctx.request.body.x_signature)) {
+  if (!checkSignature(ctx.request.body)) {
     ctx.status = 400;
     return;
   }
@@ -109,7 +109,7 @@ router.post('/capture', (ctx, next) => {
   console.log("****capture******");
   console.log(ctx.request.body);
   /* Check the signature */
-  if (!checkSignature(ctx.request.body, ctx.request.body.x_signature)) {
+  if (!checkSignature(ctx.request.body)) {
     ctx.status = 400;
     return;
   }
@@ -128,9 +128,12 @@ const createSignature = function(json) {
 };
 
 /* Check if the given signarure is corect or not */
-const checkSignature = function(json, signature) {
+const checkSignature = function(json) {
+  let signature = json.x_signature;
   console.log("checkSignature, given: " + signature);
-  let sig = createSignature(signature);
+  let temp = JSON.parse(JSON.stringify(json));
+  delete temp.x_signature;
+  let sig = createSignature(temp);
   console.log("checkSignature, created: " + sig);
   return sig === signature ? true : false;
 };
