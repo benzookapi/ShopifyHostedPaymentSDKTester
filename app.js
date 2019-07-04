@@ -11,6 +11,8 @@ app.use(bodyParser());
 
 app.use(koaRequest({}));
 
+const CHECK_KEY = 'iU44RWxeik'; // HMAC key to validate signature shared with Shopfiy and Payment Gateway
+
 router.get('/', (ctx, next) => {
     ctx.body = "WELCOME TO MY PAYMENT GATEWAY MOCK";
 });
@@ -22,6 +24,13 @@ router.post('/', (ctx) => {
     console.log(ctx.request.body);
     //d.headers = ctx.headers;
     d.body = ctx.request.body;
+
+    /* Check the signature */
+    if (!checkSignature(d.body, d.body.x_signature)) {
+      ctx.status = 400;
+      return;
+    }
+
     ctx.set('Content-Type', 'text/html');  
     var tm = new Date().toISOString();    
     var form = `<a href="https://help.shopify.com/en/api/guides/payment-gateway/hosted-payment-sdk/api-reference/response-values">See response values</a><br/><br/>
@@ -38,6 +47,7 @@ router.post('/', (ctx) => {
     <labe>x_transaction_type:</label><input type="text" name="x_transaction_type" value=""><br/>
     <input type="hidden" name="x_url_callback" value="${d.body.x_url_callback}">
     <input type="hidden" name="x_url_complete" value="${d.body.x_url_complete}"><br/>
+    <input type="hidden" name="x_signature" value="${d.body.x_signature}"><br/>
     <input type="submit" value="Complete Payment" style="font-size: 80px; color: blue;">
     </form>`; 
     ctx.body = `<h1>MY PAYMENT GATEWAY MOCK</h1> ${JSON.stringify(d, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;")} <br/><br/>${form}`;
@@ -49,19 +59,29 @@ router.post('/complete', (ctx, next) => {
   var callback = ctx.request.body.x_url_callback;
   var complete = ctx.request.body.x_url_complete;
   var body = ctx.request.body;
+
+  /* Check the signature */
+  if (!checkSignature(body, body.x_signature)) {
+    ctx.status = 400;
+    return;
+  }
+
   delete body.x_url_callback;
   delete body.x_url_complete; 
+  delete body.x_signature; 
   if (body.x_message == '') delete body.x_message;
   if (body.x_transaction_type == '') delete body.x_transaction_type;
 
   console.log(body);
   
   /* HMAC Signature */
+  /*let signature = checkSignature(body);
   let msg = Object.entries(body).sort().map(e => e.join('')).join('');
   console.log(msg);
-  const hmac = crypto.createHmac('sha256', 'iU44RWxeik');
+  const hmac = crypto.createHmac('sha256', CHECK_KEY);
   hmac.update(msg);
-  let signature = hmac.digest('hex');
+  let signature = hmac.digest('hex');*/
+  let signature = createSignature(body);
 
   // Convert POST body to query format for redirection
   let query = Object.entries(body).map(e => e.join('=')).join('&');   
@@ -92,6 +112,20 @@ router.post('/capture', (ctx, next) => {
   console.log(ctx.request.body);
   ctx.status = 200;
 });
+
+/* Create HAMC signature from the given json */
+const createSignature = function(json) {
+  let msg = Object.entries(json).sort().map(e => e.join('')).join('');
+  console.log(msg);
+  const hmac = crypto.createHmac('sha256', CHECK_KEY);
+  hmac.update(msg);
+  return hmac.digest('hex');
+};
+
+/* Check if the given signarure is corect or not */
+const checkSignature = function(json, signature) {
+  return createSignature(signature) === sdignature ? true : false;
+}
 
 app.use(router.routes());
 app.use(router.allowedMethods());
