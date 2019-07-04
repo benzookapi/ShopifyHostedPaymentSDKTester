@@ -59,6 +59,7 @@ router.post('/complete', (ctx, next) => {
   var callback = ctx.request.body.x_url_callback;
   var complete = ctx.request.body.x_url_complete;
   var body = ctx.request.body;
+  console.log(body);
 
   /* Check the signature */
   if (!checkSignature(body, body.x_signature)) {
@@ -70,17 +71,9 @@ router.post('/complete', (ctx, next) => {
   delete body.x_url_complete; 
   delete body.x_signature; 
   if (body.x_message == '') delete body.x_message;
-  if (body.x_transaction_type == '') delete body.x_transaction_type;
-
-  console.log(body);
+  if (body.x_transaction_type == '') delete body.x_transaction_type;  
   
   /* HMAC Signature */
-  /*let signature = checkSignature(body);
-  let msg = Object.entries(body).sort().map(e => e.join('')).join('');
-  console.log(msg);
-  const hmac = crypto.createHmac('sha256', CHECK_KEY);
-  hmac.update(msg);
-  let signature = hmac.digest('hex');*/
   let signature = createSignature(body);
 
   // Convert POST body to query format for redirection
@@ -103,6 +96,11 @@ router.post('/complete', (ctx, next) => {
 router.post('/refund', (ctx, next) => {
   console.log("******refund******");
   console.log(ctx.request.body);
+  /* Check the signature */
+  if (!checkSignature(ctx.request.body, ctx.request.body.x_signature)) {
+    ctx.status = 400;
+    return;
+  }
   ctx.status = 200;
 });
 
@@ -110,6 +108,11 @@ router.post('/refund', (ctx, next) => {
 router.post('/capture', (ctx, next) => {
   console.log("****capture******");
   console.log(ctx.request.body);
+  /* Check the signature */
+  if (!checkSignature(ctx.request.body, ctx.request.body.x_signature)) {
+    ctx.status = 400;
+    return;
+  }
   ctx.status = 200;
 });
 
@@ -124,8 +127,8 @@ const createSignature = function(json) {
 
 /* Check if the given signarure is corect or not */
 const checkSignature = function(json, signature) {
-  return createSignature(signature) === sdignature ? true : false;
-}
+  return createSignature(signature) === signature ? true : false;
+};
 
 app.use(router.routes());
 app.use(router.allowedMethods());
