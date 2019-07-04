@@ -77,8 +77,8 @@ router.post('/complete', (ctx, next) => {
   console.log(complete + "?" + query);
 
   /* Calling back to Shopify */
-  body.x_signature = signature;
-  let repo = ctx.post(callback, body, {    
+  //body.x_signature = signature;
+  let repo = ctx.post(callback, query, {    
   });
   console.log(repo); 
 
