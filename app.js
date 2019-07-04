@@ -26,10 +26,10 @@ router.post('/', (ctx) => {
     d.body = ctx.request.body;
 
     /* Check the signature */
-    if (!checkSignature(d.body)) {
+    /*if (!checkSignature(d.body)) {
       ctx.status = 400;
       return;
-    }
+    }*/
 
     ctx.set('Content-Type', 'text/html');  
     var tm = new Date().toISOString();    
