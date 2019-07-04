@@ -112,8 +112,8 @@ router.post('/capture', (ctx, next) => {
 /* Create HAMC signature from the given json */
 const createSignature = function(json) {
   let temp = JSON.parse(JSON.stringify(json));
-  delete temp.x_signature; if (typeof temp.x_signature !== undefined)
-  delete temp.authenticity_token; if (typeof temp.authenticity_token !== undefined)
+  if (typeof temp.x_signature !== 'undefined') delete temp.x_signature; 
+  if (typeof temp.authenticity_token !== 'undefined') delete temp.authenticity_token; 
   let msg = Object.entries(temp).sort().map(e => e.join('')).join('');
   console.log("createSignature, given msg: " + msg);
   const hmac = crypto.createHmac('sha256', CHECK_KEY);
