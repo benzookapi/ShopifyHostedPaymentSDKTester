@@ -26,10 +26,10 @@ router.post('/', (ctx) => {
     d.body = ctx.request.body;
 
     /* Check the signature */
-    /*if (!checkSignature(d.body)) {
+    if (!checkSignature(d.body)) {
       ctx.status = 400;
       return;
-    }*/
+    }
 
     ctx.set('Content-Type', 'text/html');  
     var tm = new Date().toISOString();    
@@ -90,10 +90,10 @@ router.post('/refund', (ctx, next) => {
   console.log("******refund******");
   console.log(ctx.request.body);
   /* Check the signature */
-  /*if (!checkSignature(ctx.request.body)) {
+  if (!checkSignature(ctx.request.body)) {
     ctx.status = 400;
     return;
-  }*/
+  }
   ctx.status = 200;
 });
 
@@ -102,16 +102,19 @@ router.post('/capture', (ctx, next) => {
   console.log("****capture******");
   console.log(ctx.request.body);
   /* Check the signature */
-  /*if (!checkSignature(ctx.request.body)) {
+  if (!checkSignature(ctx.request.body)) {
     ctx.status = 400;
     return;
-  }*/
+  }
   ctx.status = 200;
 });
 
 /* Create HAMC signature from the given json */
 const createSignature = function(json) {
-  let msg = Object.entries(json).sort().map(e => e.join('')).join('');
+  let temp = JSON.parse(JSON.stringify(json));
+  delete temp.x_signature; if (typeof temp.x_signature !== undefined)
+  delete temp.authenticity_token; if (typeof temp.authenticity_token !== undefined)
+  let msg = Object.entries(temp).sort().map(e => e.join('')).join('');
   console.log("createSignature, given msg: " + msg);
   const hmac = crypto.createHmac('sha256', CHECK_KEY);
   hmac.update(msg);
@@ -122,13 +125,10 @@ const createSignature = function(json) {
 
 /* Check if the given signarure is corect or not */
 const checkSignature = function(json) {
-  let signature = json.x_signature;
-  console.log("checkSignature, given: " + signature);
-  let temp = JSON.parse(JSON.stringify(json));
-  delete temp.x_signature;
-  let sig = createSignature(temp);
+  console.log("checkSignature, given: " + json.x_signature);
+  let sig = createSignature(json);
   console.log("checkSignature, created: " + sig);
-  return sig === signature ? true : false;
+  return sig === json.x_signature ? true : false;
 };
 
 app.use(router.routes());
