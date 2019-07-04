@@ -78,11 +78,10 @@ router.post('/complete', (ctx, next) => {
 
   /* Calling back to Shopify */
   //body.x_signature = signature;
-  let repo = ctx.post(callback, query, {
+  ctx.post(callback, query, {
     'Content-Type': 'application/x-www-form-urlencoded'
-  });
-  console.log(repo); 
-
+  }).then(repo => {console.log(repo);}).catch(e => {console.log(e);});
+  
   /* Going back to Shopify as POST redirect */
   ctx.redirect(complete + "?" + query);
   ctx.status = 307;   
