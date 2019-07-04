@@ -119,15 +119,20 @@ router.post('/capture', (ctx, next) => {
 /* Create HAMC signature from the given json */
 const createSignature = function(json) {
   let msg = Object.entries(json).sort().map(e => e.join('')).join('');
-  console.log(msg);
+  console.log("createSignature, given msg: " + msg);
   const hmac = crypto.createHmac('sha256', CHECK_KEY);
   hmac.update(msg);
-  return hmac.digest('hex');
+  let signarure = hmac.digest('hex');
+  console.log("createSignature, created sig: " + signarure);
+  return signarure;
 };
 
 /* Check if the given signarure is corect or not */
 const checkSignature = function(json, signature) {
-  return createSignature(signature) === signature ? true : false;
+  console.log("checkSignature, given: " + signarure);
+  let sig = createSignature(signature);
+  console.log("checkSignature, created: " + sig);
+  return sig === signature ? true : false;
 };
 
 app.use(router.routes());
