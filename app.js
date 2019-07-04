@@ -10,7 +10,7 @@ const app = module.exports = new Koa();
 app.use(bodyParser());
 
 app.use(koaRequest({
-  json: true
+  
 }));
 
 const CHECK_KEY = 'iU44RWxeik'; // HMAC key to validate signature shared with Shopfiy and Payment Gateway
@@ -80,7 +80,7 @@ router.post('/complete', (ctx, next) => {
   //body.x_signature = signature;
   ctx.post(callback, query, {
     'Content-Type': 'application/x-www-form-urlencoded'
-  }).then(repo => {/*console.log(repo);*/}).catch(e => {console.log(e);});
+  }).then(repo => console.log(repo)).catch(e => console.log(e));
   
   /* Going back to Shopify as POST redirect */
   ctx.redirect(complete + "?" + query);
