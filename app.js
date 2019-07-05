@@ -103,7 +103,6 @@ router.post('/refund', (ctx, next) => {
   }
 
   /* Calling back to Shopify */
-  body.x_signature = signature;
   let response = {};
   response['x_account_id'] = ctx.request.body.x_account_id;
   response['x_amount'] = ctx.request.body.x_amount;
