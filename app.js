@@ -65,8 +65,8 @@ router.post('/complete', (ctx, next) => {
   delete body.x_url_callback;
   delete body.x_url_complete; 
   delete body.x_signature; 
-  if (body.x_message == '') delete body.x_message;
-  if (body.x_transaction_type == '') delete body.x_transaction_type;  
+  if (body.x_message === '') delete body.x_message;
+  if (body.x_transaction_type === '') delete body.x_transaction_type;  
   
   /* HMAC Signature */
   let signature = createSignature(body);
