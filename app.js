@@ -115,7 +115,7 @@ router.post('/refund', (ctx, next) => {
   response['x_message'] = '';
   response['x_transaction_type'] = 'refund';
   response['x_signature'] = createSignature(response);
-  ctx.post(callback, response, {
+  ctx.post(ctx.request.body.x_url_callback, response, {
     'Content-Type': 'application/x-www-form-urlencoded'
   }).then(function(res){
     console.log("Callback, success: " + res);
