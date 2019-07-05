@@ -101,6 +101,29 @@ router.post('/refund', (ctx, next) => {
     ctx.status = 400;
     return;
   }
+
+  /* Calling back to Shopify */
+  body.x_signature = signature;
+  let response = {};
+  response['x_account_id'] = ctx.request.body.x_account_id;
+  response['x_amount'] = ctx.request.body.x_amount;
+  response['x_currency'] = ctx.request.body.x_currency;
+  response['x_gateway_reference'] = new Date().getTime();
+  response['x_reference'] = ctx.request.body.x_reference;
+  response['x_result'] = 'completed';
+  response['x_test'] = ctx.request.body.x_test;
+  response['x_timestamp'] = new Date().toISOString();
+  response['x_message'] = '';
+  response['x_transaction_type'] = 'refund';
+  response['x_signature'] = createSignature(response);
+  ctx.post(callback, response, {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }).then(function(res){
+    console.log("Callback, success: " + res);
+  }).catch(function(e){
+    console.log("Callback, error: " + e);
+  });
+
   ctx.status = 200;
 });
 
