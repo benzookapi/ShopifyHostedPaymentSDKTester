@@ -143,10 +143,34 @@ router.post('/webhook', (ctx, next) => {
   console.log("****webhook******");
   console.log(ctx.request.body);
   /* Check the signature */
-  if (!checkSignature(ctx.request.body)) {
+  /*if (!checkSignature(ctx.request.body)) {
     ctx.status = 400;
     return;
-  }
+  }*/
+  ctx.status = 200;
+});
+
+/* POS Cart */
+router.get('/pos_cart', (ctx, next) => {
+  console.log("****pos_cart******");
+  console.log(ctx.request.body);
+  /* Check the signature */
+  /*if (!checkSignature(ctx.request.body)) {
+    ctx.status = 400;
+    return;
+  }*/
+  ctx.status = 200;
+});
+
+/* POS Complete */
+router.get('/pos_complete', (ctx, next) => {
+  console.log("****pos_complete******");
+  console.log(ctx.request.body);
+  /* Check the signature */
+  /*if (!checkSignature(ctx.request.body)) {
+    ctx.status = 400;
+    return;
+  }*/
   ctx.status = 200;
 });
 
