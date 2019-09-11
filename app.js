@@ -138,6 +138,18 @@ router.post('/capture', (ctx, next) => {
   ctx.status = 200;
 });
 
+/* Webhook */
+router.post('/webhook', (ctx, next) => {
+  console.log("****webhook******");
+  console.log(ctx.request.body);
+  /* Check the signature */
+  if (!checkSignature(ctx.request.body)) {
+    ctx.status = 400;
+    return;
+  }
+  ctx.status = 200;
+});
+
 /* Create HAMC signature from the given json */
 const createSignature = function(json) {
   let temp = JSON.parse(JSON.stringify(json));
