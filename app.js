@@ -151,7 +151,7 @@ router.post('/webhook', (ctx, next) => {
 });
 
 /* POS Cart */
-router.get('/pos_cart', (ctx, next) => {
+router.post('/pos_cart', (ctx, next) => {
   console.log("****pos_cart******");
   console.log(ctx.request.body);
   /* Check the signature */
@@ -163,7 +163,7 @@ router.get('/pos_cart', (ctx, next) => {
 });
 
 /* POS Complete */
-router.get('/pos_complete', (ctx, next) => {
+router.post('/pos_complete', (ctx, next) => {
   console.log("****pos_complete******");
   console.log(ctx.request.body);
   /* Check the signature */
