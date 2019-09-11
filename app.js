@@ -2,12 +2,15 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const koaRequest = require('koa-http-request');
+const serve = require('koa-static');
 
 const crypto = require('crypto');
 
 const router = new Router();
 const app = module.exports = new Koa();
 app.use(bodyParser());
+
+app.use(serve('./html'));
 
 app.use(koaRequest({
   
@@ -159,7 +162,9 @@ router.post('/pos_cart', (ctx, next) => {
     ctx.status = 400;
     return;
   }*/
-  ctx.status = 200;
+  ctx.set('Content-Type', 'text/html');
+  ctx.body = `<p>CART!!</p>`;
+  //ctx.status = 200;
 });
 
 /* POS Complete */
@@ -171,7 +176,9 @@ router.post('/pos_complete', (ctx, next) => {
     ctx.status = 400;
     return;
   }*/
-  ctx.status = 200;
+  //ctx.status = 200;
+  ctx.set('Content-Type', 'text/html');
+  ctx.body = `<p>COMPLETE!!</p>`;
 });
 
 /* Create HAMC signature from the given json */
