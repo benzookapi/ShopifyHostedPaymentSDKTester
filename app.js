@@ -80,14 +80,14 @@ router.post('/complete', (ctx, next) => {
   console.log(complete + "?" + query);
 
   /* Calling back to Shopify */
-  body.x_signature = signature;
+  /*body.x_signature = signature;
   ctx.post(callback, body, {
     'Content-Type': 'application/x-www-form-urlencoded'
   }).then(function(res){
     console.log("Callback, success: " + res);
   }).catch(function(e){
     console.log("Callback, error: " + e);
-  });
+  });*/
   
   /* Going back to Shopify as POST redirect */
   ctx.redirect(complete + "?" + query);
